@@ -1,3 +1,10 @@
+#Testing monte-carlo for finding the area of an unknown circle within the boundary of a square
+#Numpy was used to avoid for loops in python
+#Improvements to be done: 
+    ##Diminishing returns past 4000 samples for this situation
+    ###Will look into how to improve this
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as st
@@ -10,7 +17,7 @@ sns.set_style("ticks")
 square = np.array([#vertices of a square
     [-1,-1],[1,1],[-1,1],[1,-1]
           ])
-
+area_square = 4
 #pick a random radius of the circle and find theortical area
 radius = np.random.uniform(0,1)
 centre_x, centre_y = 0,0
@@ -21,25 +28,24 @@ class Monte_carlo_square:
                 square: np.ndarray =np.array([[-1,-1],[1,1],[-1,1],[1,-1]]),
                  ):
         self.square = square
-        self.area_square = 4
         #circle equation
-        self.r = lambda x,y: np.sqrt((x-centre_x)**2 +(y - centre_y)**2)
+        self.r = lambda x,y: np.sqrt((x-centre_x)**2 +(y - centre_y)**2) #standard circle equation
         #Monte-carlo 
  # samples to be used
     def find_Area(self,                
-                  N: int=10000,
+                  N: int=10000
                     ):
         self.N = N
-        self.sample_coords= np.random.uniform(self.square[0][0],self.square[1][0], (2,self.N)) #Assuming the centre of the circle is unkown
-        self.radius_mask = self.r(self.sample_coords[0],self.sample_coords[1]) <=radius
+        self.sample_coords= np.random.uniform(self.square[0][0],self.square[1][0], (2,self.N)) #
+        self.radius_mask = self.r(self.sample_coords[0],self.sample_coords[1]) <=radius # Heart of the function, checks if coords are inside circle boundaries
         self.coords_outside = self.sample_coords[:, ~self.radius_mask]
         self.coords_inside = self.sample_coords[:, self.radius_mask]
         self.m = self.coords_inside.shape[1]
-        return self.m/self.N *self.area_square
+        return self.m/self.N *area_square
     def print(self):
-        print(f"Monte Carlo Area: {self.m/self.N *self.area_square:.4f}")
+        print(f"Monte Carlo Area: {self.m/self.N *area_square:.4f}")
         print(f"Expected Area: {area_circle:.4f}")
-        print(f"Error: {np.abs(area_circle -self.m/self.N *self.area_square):.4f}")
+        print(f"Error: {np.abs(area_circle -self.m/self.N *area_square):.4f}")
     def plot(self):
         x_coord = [v[0] for v in square]
         y_coord = [v[1] for v in square]
@@ -60,7 +66,7 @@ class Monte_carlo_square:
         plt.show()
 
 Monte = Monte_carlo_square()
-
+#Do Monte.plot() to show the last area calculated
 N_sample = np.random.randint(100,10000,1000)
 v_func = np.vectorize(Monte.find_Area)
 fig, ax = plt.subplots()
