@@ -9,7 +9,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as st
 import seaborn as sns
-import pandas as pd
 sns.set_context("paper")
 sns.set_style("ticks")
 
@@ -42,6 +41,7 @@ class Monte_carlo_square:
         self.coords_inside = self.sample_coords[:, self.radius_mask]
         self.m = self.coords_inside.shape[1]
         return self.m/self.N *area_square
+        
     def print(self):
         print(f"Monte Carlo Area: {self.m/self.N *area_square:.4f}")
         print(f"Expected Area: {area_circle:.4f}")
@@ -66,11 +66,11 @@ class Monte_carlo_square:
         plt.show()
 
 Monte = Monte_carlo_square()
+
 #Do Monte.plot() to show the last area calculated
 N_sample = np.random.randint(100,10000,1000)
 v_func = np.vectorize(Monte.find_Area)
 fig, ax = plt.subplots()
-
 X = v_func(N_sample)
 ax.scatter(N_sample, X)
 ax.axhline(y=area_circle, color='r', linestyle='-', label = f"Expected Area of Circle: {area_circle:.4f}")
@@ -79,3 +79,5 @@ ax.set_ylabel("Calculated Sample Area")
 plt.legend(loc="best", frameon=False)
 sns.despine(trim=True)
 plt.show()
+Monte.plot()
+
