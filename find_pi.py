@@ -32,6 +32,7 @@ class Monte_carlo_pi:
             self.square = square
         #circle equation
             self.r = lambda x,y: np.sqrt((x-centre_x)**2 +(y - centre_y)**2) #standard circle equation
+            self.sample_coords = None
         #Monte-carlo 
  # samples to be used
     def calculate(self, N: int = 10000):
@@ -39,14 +40,15 @@ class Monte_carlo_pi:
         self.N = N
         
 
-        self.sample_coords= np.random.uniform(self.square[0][0],self.square[1][0], (2,self.N)) #
+        self.sample_coords= np.random.uniform(self.square[0][0],self.square[1][0], (2,self.N)).astype(np.float32) #
         
         self.radius_mask = self.r(self.sample_coords[0],self.sample_coords[1]) <=radius # Heart of the function, checks if coords are inside circle boundaries
-        self.coords_outside = self.sample_coords[:, ~self.radius_mask]
-        self.coords_inside = self.sample_coords[:, self.radius_mask]
+        self.coords_outside = self.sample_coords[:, ~self.radius_mask].astype(np.float32)
+        self.coords_inside = self.sample_coords[:, self.radius_mask].astype(np.float32)
         self.m = self.coords_inside.shape[1]
         
         return self.m/self.N * 4
+
 
     def plot(self):
         x_coord = [v[0] for v in square]
@@ -79,7 +81,7 @@ v_func = np.vectorize(find_pi.calculate)
 fig, ax = plt.subplots()
 X = v_func(N_sample)
 ax.scatter(N_sample, X, marker = ".")
-ax.axhline(y=0, color='r', linestyle='-', label = f"{0:.4f}")
+ax.axhline(y=np.pi, color='r', linestyle='-', label = fr"Exact value of $\pi$: {np.pi:.5f}")
 ax.set_xlabel("Number of Samples")
 ax.set_ylabel(r"Estimate $\pi$")
 plt.legend(loc="best", frameon=False)

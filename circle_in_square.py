@@ -40,21 +40,23 @@ class Monte_carlo_square:
         self.coords_outside = self.sample_coords[:, ~self.radius_mask]
         self.coords_inside = self.sample_coords[:, self.radius_mask]
         self.m = self.coords_inside.shape[1]
-        return self.m/self.N *area_square
+        p_hat = self.m / self.N  # Estimated probability
+        self.variance = (p_hat * (1 - p_hat) * area_square**2) / self.N
+        return self.m/self.N *area_square, self.variance
         
     def print(self):
         print(f"Monte Carlo Area: {self.m/self.N *area_square:.4f}")
         print(f"Expected Area: {area_circle:.4f}")
         print(f"Error: {np.abs(area_circle -self.m/self.N *area_square):.4f}")
+    def estimate_variance(self):
+       
+        return self.variance
     def plot(self):
-        x_coord = [v[0] for v in square]
-        y_coord = [v[1] for v in square]
-
 
         fig, ax = plt.subplots()
 
         from matplotlib.patches import Rectangle
-        box_boundary = Rectangle((-1,-1), 2, 2, fill=False)
+        box_boundary = Rectangle((self.square[0][0],self.square[0][1]), 2, 2, fill=False)
         ax.add_patch(box_boundary)
 
         ax.scatter(self.coords_outside[0],self.coords_outside[1], c="r", marker=".", label= "")
@@ -71,13 +73,12 @@ Monte = Monte_carlo_square()
 N_sample = np.random.randint(100,10000,1000)
 v_func = np.vectorize(Monte.find_Area)
 fig, ax = plt.subplots()
-X = v_func(N_sample)
-ax.scatter(N_sample, X)
+X, var = v_func(N_sample)
+ax.scatter(N_sample, X, label = "Monte Carlo Estimate")
 ax.axhline(y=area_circle, color='r', linestyle='-', label = f"Expected Area of Circle: {area_circle:.4f}")
 ax.set_xlabel("Number of Samples")
 ax.set_ylabel("Calculated Sample Area")
 plt.legend(loc="best", frameon=False)
 sns.despine(trim=True)
 plt.show()
-Monte.plot()
 
