@@ -1,0 +1,19 @@
+import sqlite3
+import pandas as pd
+db_uri = r'Learning_ML\iris_model\sql_db\iris.db'
+
+def select_data(column_name: str = "*") -> pd.DataFrame:
+    query_string = f"SELECT {column_name} FROM Iris_database;"
+    with sqlite3.connect(db_uri) as con:
+        cursor = con.cursor()
+        num_fields = len(cursor.description)
+        field_names = [i[0] for i in cursor.description]
+        
+        query = cursor.fetchall()
+        num_fields = len(cursor.description)
+        field_names = [i[0] for i in cursor.description]
+        
+        return pd.DataFrame(query, columns=field_names)
+
+
+
