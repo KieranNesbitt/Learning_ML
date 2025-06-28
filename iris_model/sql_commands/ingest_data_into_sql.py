@@ -3,7 +3,7 @@ import pandas as pd
 import sqlite3
 data = load_iris()
 
-data_dic = {"sepal_length": data.data[:,0], "sepal_width": data.data[:,1], "petal_length": data.data[:,2], "peta_width": data.data[:,3], "encoded_class": data.target}
+data_dic = {"sepal_length": data.data[:,0], "sepal_width": data.data[:,1], "petal_length": data.data[:,2], "petal_width": data.data[:,3], "encoded_class": data.target}
 iris_dataframe = pd.DataFrame(data=data_dic)
 iris_dataframe["flower_id"] = iris_dataframe.index +1
 db_uri = 'Learning_ML\iris_model\sql_db\iris.db'

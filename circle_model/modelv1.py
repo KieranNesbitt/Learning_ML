@@ -1,6 +1,5 @@
 from torch import nn
 
-# Make device agnostic code
 
 class CircleModelV1(nn.Module):
     def __init__(self):
